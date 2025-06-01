@@ -6,7 +6,7 @@ from pydantic import BaseModel
 device = "cpu"
 print(f"Using {device} for running the model.")
 
-model = torch.jit.load("app/model_scripted.pt",map_location="cpu")
+model = torch.jit.load("app/rice_classification_model.pt",map_location="cpu")
 
 type_of_rice = ["Gonen", "Jasmine"]
 
@@ -70,20 +70,3 @@ def predict(data: RiceData):
     pred = model(input_tensor)
 
     return {"prediction": type_of_rice[round(pred.item())]}
-
-
-'''
-{
-  "Area": 2872,
-  "MajorAxisLength": 74.69188071,
-  "MinorAxisLength": 51.40045446,
-  "Eccentricity": 0.7255527468,
-  "ConvexArea": 3015,
-  "EquivDiameter": 60.47101762,
-  "Extent": 0.7130089374,
-  "Perimeter": 208.317,
-  "Roundness": 0.8316582009,
-  "AspectRation": 1.453136582
-}
-
-'''
