@@ -40,7 +40,7 @@ The model is trained to classify rice grain types based on various geometric and
   "Extent": 0.7130089374,
   "Perimeter": 208.317,
   "Roundness": 0.8316582009,
-  "AspectRation": 1.453136582
+  "AspectRatio": 1.453136582
 }
 ```
 
