@@ -5,7 +5,7 @@ from app.services.rice_service import predict_rice
 router = APIRouter()
 
 
-@router.post("/classify", status_code=status.HTTP_200_OK)
+@router.post("/rice", status_code=status.HTTP_200_OK)
 async def classify_rice(payload: RiceFeatures):
     """
     Accepts a JSON body matching RiceFeatures, returns:
@@ -30,4 +30,14 @@ async def classify_rice(payload: RiceFeatures):
         # any other unexpected error
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
+        )
+
+
+@router.get("/rice/schema", status_code=status.HTTP_200_OK)
+async def get_rice_schema():
+    if RiceFeatures.model_fields:
+        return RiceFeatures.model_json_schema()
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Schema not found"
         )

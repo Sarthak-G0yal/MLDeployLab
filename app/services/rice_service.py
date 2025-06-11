@@ -47,47 +47,33 @@ _TYPE_OF_RICE = ["Gonen", "Jasmine"]
 # Prediction function to run inference.
 def predict_rice(data: RiceFeatures) -> dict:
     """
-    Normalizes the incoming feature set, runs inference, and returns a JSON-serializable dict.
+    Normalizes the incoming feature set, runs inference using the pre-loaded rice_classifier,
+    and returns the predicted rice variety.
     """
-    # Validate that all keys in data exist in _MAX_VALUES
-    for field_name in data.__fields__.keys():
-        if field_name not in _MAX_VALUES:
-            raise ValueError(f"Unexpected feature: {field_name}")
-
-    # Build a normalized input vector in the same order as RiceFeatures.__fields__.keys()
     input_list = []
-    for feature_name in RiceFeatures.__fields__.keys():
+
+    # Normalize each feature using _MAX_VALUES
+    for feature_name in RiceFeatures.model_fields.keys():
+        if feature_name not in _MAX_VALUES:
+            raise ValueError(f"Unexpected feature: {feature_name}")
+
         raw_value = getattr(data, feature_name)
         max_val = _MAX_VALUES[feature_name]
+
         if max_val == 0:
             raise ValueError(f"Max value for {feature_name} is zero—cannot normalize.")
+
         normalized = raw_value / max_val
         input_list.append(normalized)
 
-    # Convert to a 1D Tensor of shape (num_features,)
+    # Convert input to tensor
     input_tensor = torch.tensor(input_list, dtype=torch.float32)
 
-    # Inference
-    model = _load_model()
+    rice_classifier = _load_model()
+    # Predict using the pre-loaded classifier
     with torch.no_grad():
-        # If the model expects (batch_size, num_features), unsqueeze to (1, num_features)
-        if input_tensor.ndim == 1:
-            input_tensor = input_tensor.unsqueeze(0)
-        logits = model(
-            input_tensor
-        )  # shape: (1, num_classes) or (1,) if script returns a scalar
-        # If your TorchScript returns a single float (index), handle accordingly:
-        #   pred_idx = int(torch.round(logits).item())  # if the model’s forward already returns a “class index”
-        # Otherwise, if it returns raw logits or a 1D tensor, apply softmax:
-        if logits.ndim > 0:
-            # e.g. logits shape (1, 2) for 2-class output
-            probs = torch.softmax(logits, dim=1).cpu().tolist()[0]
-            pred_idx = int(max(range(len(probs)), key=lambda i: probs[i]))
-            confidence = float(probs[pred_idx])
-        else:
-            # e.g. if the model script returns a single scalar to be rounded
-            pred_idx = int(torch.round(logits).item())
-            confidence = None  # or leave out if model doesn’t give prob
+        pred = rice_classifier(input_tensor)
+        pred_idx = round(pred.item())
 
     # Build response
     try:
@@ -95,8 +81,4 @@ def predict_rice(data: RiceFeatures) -> dict:
     except IndexError:
         predicted_variety = "Unknown"
 
-    response = {"prediction": predicted_variety}
-    if confidence is not None:
-        response["confidence"] = confidence
-
-    return response
+    return {"prediction": predicted_variety}

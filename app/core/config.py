@@ -3,8 +3,7 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "Rice Classifier API"
-    VERSION: str = "1.0.0"
+    PROJECT_NAME: str = "PyTorch Model API"
     MODEL_DIR: str = os.getenv("MODEL_DIR", "app/resources/models")
 
     class Config:
