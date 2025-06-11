@@ -1,0 +1,26 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: ./app/Dockerfile
+    container_name: rice_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - BACKEND_API_URL=http://backend:8000
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile
+    container_name: rice_frontend
+    ports:
+      - "8501:8501"
+    volumes:
+      - .:/frontend
+    environment:
+      - BACKEND_API_URL=http://backend:8000
+    depends_on:
+      - backend
