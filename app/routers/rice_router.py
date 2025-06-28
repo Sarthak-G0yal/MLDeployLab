@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
-from app.schemas.rice_schema import RiceFeatures
-from app.services.rice_service import predict_rice
+from schemas.rice_schema import RiceFeatures
+from services.rice_service import predict_rice
 
 router = APIRouter()
 

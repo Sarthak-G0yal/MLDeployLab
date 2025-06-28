@@ -1,8 +1,8 @@
 import os
 import torch
 import numpy as np
-from app.schemas.rice_schema import RiceFeatures
-from app.core.config import settings
+from schemas.rice_schema import RiceFeatures
+from core.config import settings
 from typing import Dict
 
 # MAX_VALUES dict contains the maximum values for each feature used for normalization.

@@ -41,4 +41,7 @@ if st.session_state.started:
 
             model_url = f"{BACKEND_API_URL}/api/classify/rice"
             prediction = requests.post(model_url, json=input_features).json()
-            st.success(f"The predicted class is {prediction['prediction'].upper()}")
+            if prediction["prediction"]:
+                st.success(f"The predicted class is {prediction['prediction'].upper()}.")
+            else:
+                st.write("Prediction object:", prediction)
