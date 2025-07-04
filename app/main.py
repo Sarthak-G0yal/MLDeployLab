@@ -12,3 +12,9 @@ app.include_router(rice_router.router, prefix="/api/classify", tags=["rice"])
 @app.get('/')
 async def root():
     return {"message": "The MD BACKEND"}
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app, host="0.0.0.0", port=8000)

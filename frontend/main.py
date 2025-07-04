@@ -1,47 +1,63 @@
-import streamlit as st
-from datetime import date
-from get_schema import get_schema
-from dotenv import load_dotenv
 import os
+from datetime import date
+
 import requests
+import streamlit as st
+from dotenv import load_dotenv
+from get_schema import get_schema
 
+# Load environment
 load_dotenv()
-
 BACKEND_API_URL = os.getenv("BACKEND_API_URL")
-schema_url = f"{BACKEND_API_URL}/api/classify/rice/schema"
-RiceFeatures = get_schema(url=schema_url)
 
-st.title("Classifier App")
-st.subheader("Classify rice grains.")
+# Define your classifiers
+CLASSIFIERS = {
+    "Rice": {
+        "schema": "/api/classify/rice/schema",
+        "predict": "/api/classify/rice"
+    },
+    # More will be add here.
+}
 
-if "started" not in st.session_state:
-    st.session_state.started = False
+st.set_page_config(page_title="General Classifier", layout="wide")
+st.title("General Classifier App")
+st.sidebar.header("Configuration")
 
+# Sidebar: pick the classifier
+classifier_key = st.sidebar.selectbox("Choose classifier", list(CLASSIFIERS.keys()))
 
-def start_classification():
-    st.session_state.started = True
+if classifier_key:
+    cfg = CLASSIFIERS[classifier_key]
+    schema_url = f"{BACKEND_API_URL}{cfg['schema']}"
+    try:
+        Schema = get_schema(url=schema_url)
+    except Exception as e:
+        st.error(f"Unable to load schema: {e}")
+        st.stop()
 
+    st.markdown(f"**Session started:** {date.today()}")
+    st.subheader(f"{classifier_key} – Input Features")
 
-if not st.session_state.started:
-    st.button("Get Started", on_click=start_classification)
+    with st.form("feature_form"):
+        inputs = {
+            name: st.number_input(name, format="%.4f", value=None)
+            for name in Schema.model_fields
+        }
+        submitted = st.form_submit_button("Classify")
 
-if st.session_state.started:
-    st.write("Classification started on:", date.today())
-
-    st.subheader("Enter Rice Grain Features")
-    with st.form("rice_form"):
-        input_features = {}
-        for feature in RiceFeatures.model_fields.keys():
-            input_features[feature] = st.number_input(feature, value=0.0, format="%.4f")
-
-        submitted = st.form_submit_button("Classify Rice")
-        if submitted:
-            st.write("Received features :")
-            st.json(input_features)
-
-            model_url = f"{BACKEND_API_URL}/api/classify/rice"
-            prediction = requests.post(model_url, json=input_features).json()
-            if prediction["prediction"]:
-                st.success(f"The predicted class is {prediction['prediction'].upper()}.")
+    if submitted:
+        st.json(inputs)
+        predict_url = f"{BACKEND_API_URL}{cfg['predict']}"
+        try:
+            resp = requests.post(predict_url, json=inputs)
+            resp.raise_for_status()
+            data = resp.json()
+        except requests.RequestException as e:
+            st.error(f"API request failed: {e}")
+        else:
+            pred = data.get("prediction")
+            if pred:
+                st.success(f"Predicted class: {pred.upper()}")
             else:
-                st.write("Prediction object:", prediction)
+                st.warning("No prediction returned.")
+                st.json(data)

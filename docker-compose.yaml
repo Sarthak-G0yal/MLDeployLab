@@ -6,6 +6,9 @@ services:
     container_name: MD_Backend
     ports:
       - "8000:8000"
+    restart: unless-stopped
+    networks:
+      - md_network
 
   frontend:
     build:
@@ -18,3 +21,10 @@ services:
       - BACKEND_API_URL=http://backend:8000
     depends_on:
       - backend
+    restart: unless-stopped
+    networks:
+      - md_network
+
+networks:
+  md_network:
+    driver: bridge

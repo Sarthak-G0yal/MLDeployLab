@@ -1,10 +1,12 @@
-FROM python:3.11-slim
+FROM python:3.12.11-slim-bookworm
 
 WORKDIR /frontend
 
-COPY . .
+COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
 
 ENV BACKEND_API_URL=http://localhost:8000
 
