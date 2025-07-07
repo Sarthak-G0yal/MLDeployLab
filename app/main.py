@@ -1,6 +1,6 @@
 # app/main.py
 from fastapi import FastAPI
-from routers import rice_router
+from routers import rice_router, animal_router
 from core.config import settings
 
 app = FastAPI(
@@ -8,8 +8,10 @@ app = FastAPI(
 )
 
 app.include_router(rice_router.router, prefix="/api/classify", tags=["rice"])
+app.include_router(animal_router.router, prefix="/api/classify", tags=["animal"])
 
-@app.get('/')
+
+@app.get("/")
 async def root():
     return {"message": "The MD BACKEND"}
 

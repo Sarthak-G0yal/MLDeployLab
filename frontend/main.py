@@ -12,10 +12,7 @@ BACKEND_API_URL = os.getenv("BACKEND_API_URL")
 
 # Define your classifiers
 CLASSIFIERS = {
-    "Rice": {
-        "schema": "/api/classify/rice/schema",
-        "predict": "/api/classify/rice"
-    },
+    "Rice": {"schema": "/api/classify/rice/schema", "predict": "/api/classify/rice"},
     # More will be add here.
 }
 
