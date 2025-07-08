@@ -9,18 +9,18 @@ router = APIRouter()
 
 
 @router.post("/animal", status_code=status.HTTP_200_OK)
-async def classify_animal(URL: str):
+async def classify_animal(image_url: str):
     temp_dir = Path(".temp")
     temp_dir.mkdir(exist_ok=True)
     unique_filename = temp_dir / f"{uuid.uuid4().hex}.jpg"
 
     try:
         async with aiohttp.ClientSession() as session:
-            async with session.get(URL) as response:
+            async with session.get(image_url) as response:
                 if response.status != 200:
                     raise HTTPException(
                         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        detail=f"Cannot download image from {URL}",
+                        detail=f"Cannot download image from {image_url}",
                     )
                 with open(unique_filename, "wb") as f:
                     f.write(await response.read())

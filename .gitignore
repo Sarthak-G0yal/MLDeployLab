@@ -2,5 +2,5 @@ __pycache__
 *cache*
 *dataset*
 .venv
-
+*.dev
 .env

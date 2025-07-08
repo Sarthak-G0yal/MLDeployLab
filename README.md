@@ -1,43 +1,67 @@
 # MLDeployLab
 
-This repository demonstrates the end-to-end workflow of building, deploying, and serving machine learning models using FastAPI, Docker, and Streamlit. The primary goal of MLDeployLab is to explore the complete lifecycle of ML model deployment—from training to serving predictions through APIs and capturing feedback for automated retraining.
+This repository demonstrates the end-to-end workflow of building, deploying, and serving machine learning models using FastAPI, Docker, and Streamlit. MLDeployLab covers the complete lifecycle of ML model deployment—from training to serving predictions through RESTful APIs to capturing feedback for automated retraining.
 
 ## Project Structure
 
 ```
-├── app
-│   ├── core               # Configuration files
-│   ├── resources          # Trained models and encoders
-│   ├── routers            # API route definitions
-│   ├── schemas            # Pydantic schemas
-│   ├── services           # Inference logic
-│   ├── main.py            # FastAPI application entry point
-│   ├── Dockerfile         # Backend Dockerfile
-│   └── requirements.txt
-├── frontend
-│   ├── main.py            # Streamlit frontend entry point
-│   ├── Dockerfile         # Frontend Dockerfile
-│   └── requirements.txt
-├── notebooks              # Model training notebooks
-├── docker-compose.yaml    # Multi-container deployment configuration
-└── README.md
-```
+.
+├── app                          # Backend FastAPI application
+│   ├── core                    # App configuration (e.g., config.py)
+│   ├── resources               # Trained models and encoders
+│   │   ├── encoders            # Serialized encoders (e.g., .joblib files)
+│   │   └── models              # PyTorch model files (.pt)
+│   ├── routers                 # FastAPI route definitions
+│   ├── schemas                 # Pydantic schemas for request/response validation
+│   ├── services                # Business/inference logic
+│   ├── main.py                 # FastAPI app entry point
+│   ├── Dockerfile              # Backend Dockerfile
+│   ├── requirements.txt        # Python dependencies
+│   ├── pyproject.toml          # Project metadata and tooling config
+│   └── .env                    # Environment variables for backend
+├── frontend                    # Streamlit frontend application
+│   ├── classifiers             # UI components for classifiers
+│   ├── config.py               # Frontend configuration
+│   ├── get_schema.py           # Schema fetch utility
+│   ├── main.py                 # Streamlit app entry point
+│   ├── Dockerfile              # Frontend Dockerfile
+│   ├── requirements.txt        # Python dependencies
+│   └── pyproject.toml          # Project metadata and tooling config
+├── notebooks                   # Jupyter notebooks for model training
+│   ├── AnimalClassifier.ipynb  # Training notebook for animal classifier
+│   └── RiceClassifier.ipynb    # Training notebook for rice classifier
+└── docker-compose.yaml         # Multi-service Docker configuration
+
+````
 
 ## Backend
 
-The backend is implemented with FastAPI to expose RESTful endpoints for model inference. It is containerized with Docker and deployed on Render.
+The backend is implemented with FastAPI and exposes RESTful endpoints for model inference. It is containerized with Docker and deployed on Render using the included `Dockerfile`.
 
-Deployment link: [Backend Service](https://backend-gdx3.onrender.com/)
+**Deployment:**  
+https://mldeploylab-app.onrender.com/
 
-> **Note:** The backend service may enter a sleep state after periods of inactivity. It will resume automatically within a few minutes upon receiving a new request.
+> The backend may enter a sleep state after periods of inactivity; it will resume automatically within a few minutes.
 
 ## Frontend
 
-The frontend uses Streamlit to provide an interactive interface for testing models and submitting feedback.
+The frontend is built with Streamlit to provide an interactive interface for testing models and submitting feedback. It is containerized with Docker and deployed on Render using the included `Dockerfile`.
 
-Live demo: [Live Instance](https://frontend-2iq8.onrender.com/)
+**Live Demo:**  
+https://mldeploylab-frontend.onrender.com/
 
-> **Note:** The frontend service may enter a sleep state after periods of inactivity. It will resume automatically within a few minutes upon opening.
+> The frontend may enter a sleep state after periods of inactivity; it will resume automatically within a few minutes.
+
+## Local Development
+
+To run both backend and frontend locally, ensure that Docker and Docker Compose are installed. From the project root:
+
+```bash
+docker-compose up --build
+````
+
+* Backend API: `http://localhost:8000`
+* Streamlit UI: `http://localhost:8501`
 
 ## Available Models
 
@@ -45,7 +69,7 @@ Live demo: [Live Instance](https://frontend-2iq8.onrender.com/)
 
 Classifies rice grain types based on geometric and shape-based features.
 
-**Sample Input (JSON)**
+**Sample Input**
 
 ```json
 {
@@ -62,24 +86,46 @@ Classifies rice grain types based on geometric and shape-based features.
 }
 ```
 
+**Classes**
+
+- Jasmine
+- Gonen 
+
+**Dataset**  
+Rice Type Classification on Kaggle: https://www.kaggle.com/datasets/mssmartypants/rice-type-classification
+
+
 ### Animal Image Classifier
 
-Classifies animals from an image URL. The API accepts a JSON payload with an image URL, downloads the image using `requests`, and returns the predicted label.
+Classifies animals from an image URL. The API accepts a JSON payload with an image URL, downloads the image, and returns the predicted label.
 
-**Sample Input (JSON)**
+**Sample Input**
 
 ```json
 {
-  "url": "https://example.com/path/to/image.jpg"
+  "image_url": "https://example.com/path/to/image.jpg"
 }
 ```
 
-## Future Plans
+**Classes**
 
-* Integrate additional models across various domains
-* Implement a user feedback loop: after each prediction, users can confirm correctness or submit the correct label
-* Store feedback data and trigger automated retraining pipelines
-* Add model versioning, logging, and performance monitoring
-* Enhance packaging, scalability, and deployment automation
+- Cat  
+- Dog  
+- Wild  
 
-Contributions and feedback are welcome.
+**Dataset**  
+Animal Faces on Kaggle: https://www.kaggle.com/datasets/andrewmvd/animal-faces
+
+## Feedback and Contributions
+
+Contributions, suggestions, and feedback are welcome. Please open an issue or submit a pull request for improvements, bug reports, or feature requests.
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+
+## Author
+
+Sarthak Goyal
+[sarthak.goyal.3505@gmail.com](mailto:sarthak.goyal.3505@gmail.com)
+
