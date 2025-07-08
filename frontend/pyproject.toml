@@ -1,5 +1,5 @@
 [project]
-name = "frontend"
+name = "MLDeployLab-frontend"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
