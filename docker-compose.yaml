@@ -9,6 +9,8 @@ services:
     restart: unless-stopped
     networks:
       - md_network
+    volumes:
+      - ./app:/app
 
   frontend:
     build:
@@ -24,6 +26,8 @@ services:
     restart: unless-stopped
     networks:
       - md_network
+    volumes:
+      - ./frontend:/frontend
 
 networks:
   md_network:

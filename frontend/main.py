@@ -18,4 +18,3 @@ if classifier_key:
     cfg = CLASSIFIERS[classifier_key]
     module = importlib.import_module(f"classifiers.{cfg['module']}")
     module.render(BACKEND_API_URL, cfg)
-    

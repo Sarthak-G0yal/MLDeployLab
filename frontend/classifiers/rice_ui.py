@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 from get_schema import get_schema
 
+
 def render(backend_url, endpoints):
     schema_url = f"{backend_url}{endpoints['schema']}"
     try:
@@ -23,14 +24,21 @@ def render(backend_url, endpoints):
         predict_url = f"{backend_url}{endpoints['predict']}"
         try:
             resp = requests.post(predict_url, json=inputs)
-            resp.raise_for_status()
+            if resp.status_code != 200:
+                error_detail = resp.json().get("detail", "Unknown error")
+                st.error("Prediction failed!!")
+                st.write("Error detail:")
+                st.json(error_detail)
+                return
             data = resp.json()
         except requests.RequestException as e:
             st.error(f"API request failed: {e}")
         else:
             pred = data.get("prediction")
             if pred:
-                st.success(f"Predicted class: {pred.upper()}")
+                _, center_col, _ = st.columns([2.4, 1, 2.4])
+                with center_col:
+                    st.success(f"Prediction: {pred.upper()}")
             else:
                 st.warning("No prediction returned.")
                 st.json(data)

@@ -34,7 +34,7 @@ async def classify_rice(payload: RiceFeatures):
 
 
 @router.get("/rice/schema", status_code=status.HTTP_200_OK)
-async def get_rice_schema():
+async def get_rice_schema() -> dict:
     if RiceFeatures.model_fields:
         return RiceFeatures.model_json_schema()
     else:

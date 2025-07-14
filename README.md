@@ -17,8 +17,7 @@ This repository demonstrates the end-to-end workflow of building, deploying, and
 │   ├── main.py                 # FastAPI app entry point
 │   ├── Dockerfile              # Backend Dockerfile
 │   ├── requirements.txt        # Python dependencies
-│   ├── pyproject.toml          # Project metadata and tooling config
-│   └── .env                    # Environment variables for backend
+│   └── pyproject.toml          # Project metadata and tooling config                     
 ├── frontend                    # Streamlit frontend application
 │   ├── classifiers             # UI components for classifiers
 │   ├── config.py               # Frontend configuration

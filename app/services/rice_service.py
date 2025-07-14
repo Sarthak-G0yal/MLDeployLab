@@ -45,7 +45,7 @@ _TYPE_OF_RICE = ["Gonen", "Jasmine"]
 
 
 # Prediction function to run inference.
-def predict_rice(data: RiceFeatures) -> dict:
+def predict_rice(payload: RiceFeatures) -> dict:
     """
     Normalizes the incoming feature set, runs inference using the pre-loaded rice_classifier,
     and returns the predicted rice variety.
@@ -57,11 +57,13 @@ def predict_rice(data: RiceFeatures) -> dict:
         if feature_name not in _MAX_VALUES:
             raise ValueError(f"Unexpected feature: {feature_name}")
 
-        raw_value = getattr(data, feature_name)
+        raw_value = getattr(payload, feature_name)
         max_val = _MAX_VALUES[feature_name]
 
         if max_val == 0:
             raise ValueError(f"Max value for {feature_name} is zero—cannot normalize.")
+        if raw_value == 0:
+            raise ValueError(f"Value for {feature_name} is zero.")
 
         normalized = raw_value / max_val
         input_list.append(normalized)

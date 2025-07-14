@@ -14,18 +14,14 @@ app.include_router(animal_router.router, prefix="/api/classify", tags=["animal"]
 @app.get("/")
 async def root():
     return {
-    "project": "MLDeployLab",
-    "description": "End-to-end ML deployment workflow using FastAPI, Docker, and Streamlit.",
-    "backend": "FastAPI application for model inference",
-    "frontend": "Streamlit interface for testing and feedback",
-    "models": [
-        "Rice Type Classifier",
-        "Animal Image Classifier"
-    ],
-    "status": "Running",
-    "message": "The MD BACKEND"
-}
-
+        "project": "MLDeployLab",
+        "description": "End-to-end ML deployment workflow using FastAPI, Docker, and Streamlit.",
+        "backend": "FastAPI application for model inference",
+        "frontend": "Streamlit interface for testing and feedback",
+        "models": ["Rice Type Classifier", "Animal Image Classifier"],
+        "status": "Running",
+        "message": "The MD BACKEND",
+    }
 
 
 if __name__ == "__main__":
