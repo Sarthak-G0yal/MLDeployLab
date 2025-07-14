@@ -1,5 +1,12 @@
 # MLDeployLab
 
+<p align="center">
+  <img src="frontend/assets/logo_square.png" alt="MLDeployLab Logo" width="180" style="border-radius:8px; padding:4px; box-shadow:0 2px 6px rgba(0, 0, 0, 0.1);">
+</p>
+
+
+
+
 This repository demonstrates the end-to-end workflow of building, deploying, and serving machine learning models using FastAPI, Docker, and Streamlit. MLDeployLab covers the complete lifecycle of ML model deployment—from training to serving predictions through RESTful APIs to capturing feedback for automated retraining.
 
 ## Project Structure

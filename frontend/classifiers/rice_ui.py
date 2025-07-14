@@ -10,9 +10,7 @@ def render(backend_url, endpoints):
     except Exception as e:
         st.error(f"Unable to load schema: {e}")
         st.stop()
-
-    st.subheader("Rice - Input Features")
-
+    st.caption("Please enter the following features to classify:")
     with st.form("rice_form"):
         inputs = {
             name: st.number_input(name, format="%.4f", value=None)

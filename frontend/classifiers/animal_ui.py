@@ -3,8 +3,6 @@ import requests
 
 
 def render(backend_url, endpoints):
-    st.subheader("Animal Face Image Classification")
-
     image_url = st.text_input("Enter image URL")
 
     if image_url:
