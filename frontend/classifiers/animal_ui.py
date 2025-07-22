@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 
 
-def render(backend_url, endpoints):
+def render(backend_url, config):
     image_url = st.text_input("Enter image URL")
 
     if image_url:
@@ -13,7 +13,7 @@ def render(backend_url, endpoints):
     if st.button("Classify") and image_url:
         try:
             resp = requests.post(
-                f"{backend_url}{endpoints['predict']}", json={"image_url": image_url}
+                f"{backend_url}{config['predict']}", json={"image_url": image_url}
             )
             if resp.status_code != 200:
                 st.error("Prediction failed:")
@@ -60,10 +60,10 @@ def render(backend_url, endpoints):
     if st.session_state.get("feedback_type") == "yes":
         try:
             resp = requests.post(
-                f"{backend_url}{endpoints['feedback']}",
+                f"{backend_url}{config['feedback']}",
                 json={
-                    "image_url": image_url,
-                    "animal_class": st.session_state.prediction_result.lower(),
+                    "features": {"image_url": image_url},
+                    "correct_class": st.session_state.prediction_result.lower(),
                 },
             )
             if resp.status_code != 200:
@@ -88,7 +88,7 @@ def render(backend_url, endpoints):
         if not st.session_state.get("correct_class_confirmed", False):
             st.radio(
                 "Select the correct class",
-                options=["Dog", "Cat", "Wild"],
+                options=config["classes"],
                 index=None,
                 key="correct_class",
             )
@@ -97,10 +97,10 @@ def render(backend_url, endpoints):
                 if st.button("Confirm and Submit", key="confirm_button"):
                     try:
                         resp = requests.post(
-                            f"{backend_url}{endpoints['feedback']}",
+                            f"{backend_url}{config['feedback']}",
                             json={
-                                "image_url": image_url,
-                                "animal_class": st.session_state.correct_class.lower(),
+                                "features": {"image_url": image_url},
+                                "correct_class": st.session_state.correct_class.lower(),
                             },
                         )
                         resp.raise_for_status()

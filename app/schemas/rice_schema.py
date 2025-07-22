@@ -12,3 +12,8 @@ class RiceFeatures(BaseModel):
     Perimeter: float = Field(..., gt=0)
     Roundness: float = Field(..., gt=0)
     AspectRatio: float = Field(..., gt=0)
+
+
+class RiceFeedback(BaseModel):
+    features: RiceFeatures
+    correct_class: str

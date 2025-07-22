@@ -6,5 +6,5 @@ class AnimalFeatures(BaseModel):
 
 
 class AnimalFeedback(BaseModel):
-    image_url: HttpUrl
-    animal_class: str
+    features: AnimalFeatures
+    correct_class: str

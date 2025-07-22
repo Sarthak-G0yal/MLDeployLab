@@ -15,6 +15,16 @@ PATH_TO_FEEDBACK_FOLDER = os.getenv("PATH_TO_FEEDBACK_FOLDER") or "./resources/f
 os.makedirs(PATH_TO_FEEDBACK_FOLDER, exist_ok=True)
 
 
+@router.get("/animal/schema", status_code=status.HTTP_200_OK)
+async def get_animal_schema() -> dict:
+    if AnimalFeatures.model_fields:
+        return AnimalFeatures.model_json_schema()
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Schema not found"
+        )
+
+
 @router.post("/animal", status_code=status.HTTP_200_OK)
 async def classify_animal(payload: AnimalFeatures) -> dict:
     image_url = str(payload.image_url)
@@ -55,20 +65,16 @@ async def classify_animal(payload: AnimalFeatures) -> dict:
 @router.post("/animal/feedback", status_code=status.HTTP_200_OK)
 async def store_animal_feedback(feedback: AnimalFeedback) -> dict:
     feedback_data = feedback.dict()
-    image_url = feedback_data.get("image_url")
-    animal = feedback_data.get("animal_class")
-
-    with open(f"{PATH_TO_FEEDBACK_FOLDER}/animal_feedback.csv", "a") as f:
-        f.write(f"{image_url},{animal}\n")
+    features = feedback_data.get("features")
+    correct_class = feedback_data.get("correct_class")
+    features_key = ",".join([f"{k}" for k in features.keys()])
+    features_value = ",".join([f"{v}" for v in features.values()])
+    file_path = f"{PATH_TO_FEEDBACK_FOLDER}/animal_feedback.csv"
+    if not os.path.exists(file_path):
+        os.makedirs(PATH_TO_FEEDBACK_FOLDER, exist_ok=True)
+        with open(file_path, "a") as f:
+            f.write(f"{features_key},class\n")
+    with open(file_path, "a") as f:
+        f.write(f"{features_value},{correct_class}\n")
 
     return {"success": True}
-
-
-@router.get("/animal/schema", status_code=status.HTTP_200_OK)
-async def get_animal_schema() -> dict:
-    if AnimalFeatures.model_fields:
-        return AnimalFeatures.model_json_schema()
-    else:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Schema not found"
-        )
